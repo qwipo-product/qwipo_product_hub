@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qwipo Resource Hub Prototype</title>
+  <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=A5oOl3C7-n7ybTYiykIPHW68Ipa-UrRZZEI4KxjLWW5fbngl7whcbztn8Ysh_Fi_MyOAUuuFg2EtUsWBHb2KaJNoqg0OzmTAWkqhlqHuvseUqbtaoVPQt6HWOGjyYO79i3tecblHHmzkxI4Q2JvJ8gpb59INftDsDocbXghZslyW1jRO606u1k0FE_62kXRotx2FOWkqY42E9IO-jEBfN_9nAPDx-oNxW3urDX7XyE8y7M7k_tDBcifipVgX1Lkj" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { qwipo: '#4F35FF', ink: '#071126' } } } }
+  </script>
+  <style>
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .card { transition: all .18s ease; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 14px 35px rgba(20,20,60,.08); }
+    .screen { display:none; }
+    .screen.active { display:block; }
+  </style>
+</head>
+<body class="bg-white text-ink">
+<div class="min-h-screen flex">
+  <aside class="w-72 border-r border-slate-200 p-6 hidden lg:flex flex-col">
+    <div class="flex items-center gap-3 mb-10">
+      <div class="w-10 h-10 rounded-2xl border-4 border-qwipo"></div>
+      <div><div class="font-bold text-lg">Qwipo</div><div class="text-xs text-slate-500">Resource Hub</div></div>
+    </div>
+    <nav class="space-y-2 text-sm font-medium">
+      <button data-view="home" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-violet-50 text-qwipo">⌂ Home</button>
+      <button data-view="products" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50">□ Products</button>
+      <button data-view="features" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50">▦ Features</button>
+      <button data-view="integrations" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50">🔗 Integrations</button>
+      <button data-view="customers" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50">👥 Customers</button>
+      <button data-view="processes" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50">⌘ Processes</button>
+      <button data-view="architecture" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50">▱ Architecture</button>
+      <button data-view="decisions" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50">▤ Decision Log</button>
+    </nav>
+    <div class="mt-auto rounded-2xl border border-violet-100 bg-violet-50 p-5">
+      <div class="font-bold text-qwipo">Smart Search</div>
+      <p class="text-sm text-slate-600 mt-2">Search across docs, videos, designs, APIs and notes.</p>
+      <button id="smartSearchBtn" class="mt-4 w-full bg-qwipo text-white rounded-xl px-4 py-3 font-semibold">Try Search →</button>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-5 md:p-10 max-w-[1500px] mx-auto">
+    <header class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-6">
+      <div><h1 class="text-3xl md:text-4xl font-black tracking-tight">Qwipo Resource Hub</h1><p class="text-slate-600 mt-2">One place. All products, features, integrations and everything that matters.</p></div>
+      <div class="flex items-center gap-6">
+        <button id="addResourceBtn" class="px-6 py-3 border border-qwipo text-qwipo rounded-xl font-semibold hover:bg-violet-50">+ Add Resource</button>
+        <div class="hidden md:flex items-center gap-5 text-xs">
+          <button class="person" data-person="Siva Mamidi"><div class="avatar">SM</div><span>Siva Mamidi</span></button>
+          <button class="person" data-person="Moris"><div class="avatar">MO</div><span>Moris</span></button>
+          <button class="person" data-person="Sandeep Kaushik"><div class="avatar">SK</div><span>Sandeep Kaushik</span></button>
+          <button class="person" data-person="Omkar"><div class="avatar">OK</div><span>Omkar</span></button>
+        </div>
+      </div>
+    </header>
+
+    <section class="mt-8 flex gap-3">
+      <div class="relative flex-1"><span class="absolute left-5 top-3.5 text-slate-400">⌕</span><input id="searchInput" class="w-full border border-slate-200 rounded-2xl py-4 pl-12 pr-4 outline-none focus:ring-4 focus:ring-violet-100 focus:border-qwipo" placeholder="Search anything... e.g. MOQ, DMS Integration, Retailer Ordering, ITC" /></div>
+      <button id="filterBtn" class="hidden md:block px-6 rounded-2xl border border-slate-200 hover:bg-slate-50">Filters</button>
+    </section>
+    <div id="loader" class="hidden mt-6 text-qwipo font-semibold">Loading resources...</div>
+
+    <section id="home" class="screen active mt-8">
+      <div id="summaryCards" class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-5"></div>
+      <div class="mt-8 rounded-2xl border border-slate-200 p-4 md:p-6">
+        <div class="flex items-center gap-8 border-b border-slate-200">
+          <button data-tab="recent" class="tab-btn pb-4 font-bold text-qwipo border-b-2 border-qwipo">Recent Resources</button>
+          <button data-tab="viewed" class="tab-btn pb-4 font-bold text-slate-500">Recently Viewed</button>
+        </div>
+        <div id="resourceTable" class="mt-3"></div>
+      </div>
+      <h2 class="mt-7 text-xl font-black">Browse by top level areas</h2>
+      <div id="topAreas" class="grid md:grid-cols-2 xl:grid-cols-5 gap-5 mt-4"></div>
+    </section>
+    <section id="listView" class="screen mt-8"></section>
+    <section id="detailView" class="screen mt-8"></section>
+  </main>
+</div>
+
+<div id="modal" class="hidden fixed inset-0 bg-black/40 z-50 items-center justify-center p-4">
+  <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl">
+    <div class="flex justify-between items-center"><h3 id="modalTitle" class="text-2xl font-black">Add Resource</h3><button id="closeModal" class="text-2xl">×</button></div>
+    <div id="modalBody" class="mt-5 text-slate-700"></div>
+  </div>
+</div>
+
+<script>
+const categories=[{id:'products',title:'Products',count:8,desc:'All products',icon:'📦'},{id:'integrations',title:'Integrations',count:27,desc:'All integrations',icon:'🔗'},{id:'customers',title:'Customers',count:18,desc:'Customer portals & contexts',icon:'👥'},{id:'features',title:'Features',count:142,desc:'All features',icon:'▦'},{id:'processes',title:'Processes',count:23,desc:'Workflows & SOPs',icon:'⌘'},{id:'architecture',title:'Architecture',count:12,desc:'Tech architecture',icon:'▱'},{id:'decisions',title:'Decision Log',count:45,desc:'Key decisions',icon:'▤'}];
+const areas=[{id:'buyer-app',title:'Buyer App',desc:'Ordering, catalog, cart, payments & more',count:32,icon:'📱'},{id:'seller-portal',title:'Seller Portal',desc:'My SKU, pricing, orders, companies & more',count:28,icon:'🏬'},{id:'logistics',title:'Logistics',desc:'NDD, tracking, delivery flow & exceptions',count:24,icon:'🚚'},{id:'ondc',title:'ONDC',desc:'ONDC flows, schema, mapping & configs',count:18,icon:'🌐'},{id:'integrations-area',title:'Integrations',desc:'DMS, ERP, payments, APIs & webhooks',count:27,icon:'🔗'}];
+const resources=[
+{title:'DMS Integration – API Documentation',subtitle:'Complete API docs for DMS integration',type:'Document',category:'Integrations',owner:'Siva Mamidi',updated:'2h ago',area:'integrations-area',link:'https://docs.google.com/document/d/example-dms-api',icon:'📄'},
+{title:'Retailer App – Latest Figma Design',subtitle:'UI/UX design files and prototypes',type:'Design',category:'Buyer App',owner:'Moris',updated:'5h ago',area:'buyer-app',link:'https://figma.com/file/example-retailer-app',icon:'🎨'},
+{title:'Retailer Ordering Flow – Walkthrough',subtitle:'Step by step ordering flow demo',type:'Video',category:'Buyer App',owner:'Sandeep Kaushik',updated:'1d ago',area:'buyer-app',link:'https://www.loom.com/share/example-retailer-ordering',icon:'▶️'},
+{title:'ITC – Beat Mapping Logic',subtitle:'Logic and rules for beat mapping',type:'Sheet',category:'Customers',owner:'Omkar',updated:'1d ago',area:'logistics',link:'https://docs.google.com/spreadsheets/d/example-itc-beat',icon:'📊'},
+{title:'Seller Portal – My SKU Guide',subtitle:'Complete guide for My SKU feature',type:'Document',category:'Seller Portal',owner:'Moris',updated:'2d ago',area:'seller-portal',link:'https://docs.google.com/document/d/example-my-sku',icon:'📘'},
+{title:'ONDC Order Lifecycle',subtitle:'Order states, callbacks and schema rules',type:'Document',category:'ONDC',owner:'Siva Mamidi',updated:'3d ago',area:'ondc',link:'https://docs.google.com/document/d/example-ondc',icon:'🌐'},
+{title:'Logistics NDD Flow',subtitle:'Next day delivery flow and exception handling',type:'Video',category:'Logistics',owner:'Sandeep Kaushik',updated:'4d ago',area:'logistics',link:'https://www.loom.com/share/example-ndd',icon:'🚚'},
+{title:'Seller Pricing Rules',subtitle:'Pricing, MOQ, MOV and retailer-level rules',type:'Decision',category:'Seller Portal',owner:'Omkar',updated:'6d ago',area:'seller-portal',link:'https://docs.google.com/document/d/example-pricing',icon:'💰'}
+];
+const viewed=[resources[2],resources[0],resources[4]];
+document.querySelectorAll('.avatar').forEach(el=>el.className='w-12 h-12 rounded-full bg-slate-900 text-white grid place-items-center font-bold');
+function initials(name){return name.split(' ').map(x=>x[0]).join('').slice(0,2)}
+function renderCards(){summaryCards.innerHTML=categories.map(c=>`<button onclick="openList('${c.id}','${c.title}')" class="card text-left rounded-2xl border border-slate-200 p-5 hover:border-qwipo"><div class="w-12 h-12 rounded-xl bg-violet-50 grid place-items-center text-2xl">${c.icon}</div><div class="mt-5 font-black text-lg">${c.title}</div><div class="text-2xl font-black mt-2">${c.count}</div><div class="text-qwipo text-sm mt-3">View all →</div></button>`).join('');topAreas.innerHTML=areas.map(a=>`<button onclick="openArea('${a.id}')" class="card text-left rounded-2xl border border-slate-200 p-5 flex items-center gap-4 hover:border-qwipo"><div class="w-12 h-12 rounded-xl bg-blue-50 grid place-items-center text-2xl">${a.icon}</div><div class="flex-1"><div class="font-black">${a.title}</div><div class="text-sm text-slate-600 mt-1">${a.desc}</div><div class="text-sm mt-3">${a.count} Resources</div></div><div>→</div></button>`).join('')}
+function renderTable(data=resources){resourceTable.innerHTML=`<div class="hidden md:grid grid-cols-6 gap-4 px-2 py-3 text-sm text-slate-500 border-b"><div class="col-span-2">Title</div><div>Type</div><div>Category</div><div>Owner</div><div>Quick Access</div></div>${data.map(r=>`<div class="grid md:grid-cols-6 gap-4 items-center px-2 py-4 border-b last:border-b-0 hover:bg-slate-50 rounded-xl"><button onclick="openDetail(${resources.indexOf(r)})" class="col-span-2 flex items-center gap-4 text-left"><div class="w-11 h-11 rounded-xl bg-slate-100 grid place-items-center">${r.icon}</div><div><div class="font-black">${r.title}</div><div class="text-sm text-slate-600">${r.subtitle}</div></div></button><div><span class="text-xs px-3 py-1 rounded-lg bg-red-50 text-red-600">${r.type}</span></div><div><span class="text-xs px-3 py-1 rounded-lg bg-blue-50 text-blue-600">${r.category}</span></div><button onclick="filterOwner('${r.owner}')" class="flex items-center gap-2 text-left"><div class="w-8 h-8 rounded-full bg-slate-900 text-white grid place-items-center text-xs">${initials(r.owner)}</div>${r.owner}</button><div class="flex gap-4 text-qwipo"><a href="${r.link}" target="_blank" title="Open direct link">↗</a><button onclick="copyLink('${r.link}')">🔖</button><button onclick="openDetail(${resources.indexOf(r)})">⋯</button></div></div>`).join('')}`}
+function setView(view){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); if(view==='home') home.classList.add('active'); else listView.classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b=>b.className='nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50'); const active=document.querySelector(`.nav-btn[data-view="${view}"]`); if(active) active.className='nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-violet-50 text-qwipo'}
+function openList(id,title){setView(id); const data=resources.filter(r=>r.category.toLowerCase().includes(title.toLowerCase().replace('decision log','decision'))||id==='products'&&['Buyer App','Seller Portal'].includes(r.category)||id==='features'); listView.innerHTML=listTemplate(title,data.length?data:resources)}
+function openArea(areaId){setView('area'); const area=areas.find(a=>a.id===areaId); const data=resources.filter(r=>r.area===areaId); listView.innerHTML=listTemplate(area.title,data)}
+function listTemplate(title,data){return `<button onclick="goHome()" class="text-qwipo mb-5">← Back to home</button><div><h2 class="text-3xl font-black">${title}</h2><p class="text-slate-600 mt-1">${data.length} resources available with direct links.</p></div><div class="grid lg:grid-cols-2 gap-5 mt-6">${data.map(r=>`<div class="card border border-slate-200 rounded-2xl p-5"><div class="flex gap-4"><div class="w-12 h-12 rounded-xl bg-slate-100 grid place-items-center text-xl">${r.icon}</div><div class="flex-1"><h3 class="font-black">${r.title}</h3><p class="text-sm text-slate-600 mt-1">${r.subtitle}</p><div class="flex flex-wrap gap-2 mt-4 text-xs"><span class="px-3 py-1 rounded-lg bg-violet-50 text-qwipo">${r.type}</span><span class="px-3 py-1 rounded-lg bg-slate-100">${r.owner}</span><span class="px-3 py-1 rounded-lg bg-green-50 text-green-700">${r.updated}</span></div><div class="mt-5 flex gap-3"><a href="${r.link}" target="_blank" class="bg-qwipo text-white px-4 py-2 rounded-xl font-semibold">Open Link</a><button onclick="copyLink('${r.link}')" class="border px-4 py-2 rounded-xl">Copy Link</button><button onclick="openDetail(${resources.indexOf(r)})" class="border px-4 py-2 rounded-xl">Details</button></div></div></div></div>`).join('')}</div>`}
+function openDetail(index){const r=resources[index];document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));detailView.classList.add('active');detailView.innerHTML=`<button onclick="goHome()" class="text-qwipo mb-5">← Back to home</button><div class="rounded-3xl border border-slate-200 p-8"><div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6"><div><div class="text-5xl mb-4">${r.icon}</div><h2 class="text-3xl font-black">${r.title}</h2><p class="text-slate-600 mt-2">${r.subtitle}</p></div><div class="flex gap-3"><a href="${r.link}" target="_blank" class="bg-qwipo text-white px-5 py-3 rounded-xl font-semibold">Open Direct Link</a><button onclick="copyLink('${r.link}')" class="border px-5 py-3 rounded-xl">Copy Link</button></div></div><div class="grid md:grid-cols-4 gap-4 mt-8"><div class="bg-slate-50 p-4 rounded-2xl"><div class="text-sm text-slate-500">Type</div><b>${r.type}</b></div><div class="bg-slate-50 p-4 rounded-2xl"><div class="text-sm text-slate-500">Category</div><b>${r.category}</b></div><div class="bg-slate-50 p-4 rounded-2xl"><div class="text-sm text-slate-500">Owner</div><b>${r.owner}</b></div><div class="bg-slate-50 p-4 rounded-2xl"><div class="text-sm text-slate-500">Updated</div><b>${r.updated}</b></div></div><div class="mt-8"><h3 class="font-black text-xl">Resource link</h3><div class="mt-3 p-4 rounded-2xl bg-slate-50 break-all text-slate-600">${r.link}</div></div></div>`}
+function goHome(){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));home.classList.add('active');setView('home')}
+function filterOwner(owner){setView('owner');listView.innerHTML=listTemplate(owner+"'s Resources",resources.filter(r=>r.owner===owner))}
+function copyLink(link){navigator.clipboard.writeText(link);showModal('Link copied',`<p>The shareable link has been copied.</p><div class="mt-4 p-3 bg-slate-50 rounded-xl break-all">${link}</div>`)}
+function showModal(title,body){modalTitle.textContent=title;modalBody.innerHTML=body;modal.classList.remove('hidden');modal.classList.add('flex')}
+closeModal.onclick=()=>{modal.classList.add('hidden');modal.classList.remove('flex')};
+addResourceBtn.onclick=()=>showModal('Add Resource',`<p class="mb-4">Prototype form. In real MVP, this will save to Google Sheet, Airtable, Supabase, or your backend.</p><input class="w-full border rounded-xl p-3 mb-3" placeholder="Resource title"><input class="w-full border rounded-xl p-3 mb-3" placeholder="Google Drive / Figma / Loom / Doc link"><select class="w-full border rounded-xl p-3 mb-3"><option>Buyer App</option><option>Seller Portal</option><option>Logistics</option><option>ONDC</option><option>Integrations</option></select><button onclick="showModal('Saved','Resource added in prototype mode.')" class="bg-qwipo text-white px-5 py-3 rounded-xl font-semibold">Save Resource</button>`);
+smartSearchBtn.onclick=()=>{searchInput.focus();searchInput.value='DMS';doSearch()};filterBtn.onclick=()=>showModal('Filters','<p>Filter by owner, category, resource type, updated date, and status.</p>');document.querySelectorAll('.person').forEach(btn=>btn.onclick=()=>filterOwner(btn.dataset.person));document.querySelectorAll('.nav-btn').forEach(btn=>{btn.onclick=()=>btn.dataset.view==='home'?goHome():openList(btn.dataset.view,btn.textContent.replace(/[^\w\s]/g,'').trim())});document.querySelectorAll('.tab-btn').forEach(btn=>{btn.onclick=()=>{document.querySelectorAll('.tab-btn').forEach(b=>b.className='tab-btn pb-4 font-bold text-slate-500');btn.className='tab-btn pb-4 font-bold text-qwipo border-b-2 border-qwipo';renderTable(btn.dataset.tab==='recent'?resources:viewed)}});
+function doSearch(){const q=searchInput.value.toLowerCase().trim();if(!q){renderTable(resources);return}loader.classList.remove('hidden');setTimeout(()=>{loader.classList.add('hidden');const data=resources.filter(r=>[r.title,r.subtitle,r.type,r.category,r.owner].join(' ').toLowerCase().includes(q));renderTable(data)},350)}
+searchInput.addEventListener('input',doSearch);
+renderCards();renderTable(resources);
+</script>
+</body>
+</html>
